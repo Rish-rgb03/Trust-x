@@ -70,3 +70,32 @@ The UI implements the four TRUST-X screens: Pipeline, Assurance, Investigation, 
 ## Design notes
 
 Behavioral and trigger thresholds are v0.1 expert heuristics and are not calibrated probabilities. Benchmark-derived detector reliability should replace placeholders before making research claims. Benign distribution shift is treated as a competing explanation, not automatically as an attack.
+
+## Final product flow
+
+The React workspace is designed around the TRUST-X investigation loop rather than a static dashboard:
+
+1. **Pipeline** — inspect the lifecycle graph, evidence counts, current assurance state, and implicated source.
+2. **Assurance** — review the deterministic GREEN/AMBER/RED decision, risk, confidence, coverage, competing hypotheses, reason codes, integrity checks, and warnings.
+3. **Investigation** — follow the highlighted explanation path, inspect individual nodes, and run the counterfactual endpoint against the current graph.
+4. **Evidence** — search and filter evidence by node, detector, and evidence type, then expand the supporting payload.
+5. **Re-run assurance** — the UI can submit the current graph to POST /api/v1/investigate so the reasoning layer is exercised through the product rather than only through the demo endpoint.
+6. **Export evidence** — the current graph, investigation report, and counterfactual result can be exported as a JSON case bundle from the browser.
+
+The UI also checks GET /health on startup, shows backend connectivity, and links directly to the FastAPI interactive API docs at /docs.
+
+### Product demo
+
+For a reliable presentation demo:
+
+```bash
+# terminal 1
+uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
+
+# terminal 2
+cd frontend
+npm install
+npm run dev
+```
+
+Open the frontend, start on **Pipeline**, use **Re-run assurance**, move to **Assurance** to explain the verdict, then **Investigation** → **Run counterfactual**, and finish on **Evidence** to show the underlying records. Use **Export evidence** to capture the case as a portable JSON bundle.
