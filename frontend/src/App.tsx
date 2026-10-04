@@ -135,7 +135,7 @@ function App() {
   useEffect(() => { void loadDemo() }, [])
 
   const selected = useMemo(
-    () => graph?.nodes.find((node) => node.id === selectedNode) ?? null,
+    () => graph?.nodes.find((node: Node) => node.id === selectedNode) ?? null,
     [graph, selectedNode],
   )
 
@@ -290,7 +290,7 @@ function GraphView({ graph, report, selectedNode, onSelect }: { graph: Graph; re
           const highlighted = hot.has(node.id)
           const selected = node.id === selectedNode
           return (
-            <g key={node.id} className={selected ? 'graph-node selected' : highlighted ? 'graph-node highlighted' : 'graph-node'} onClick={() => onSelect(node.id)} role="button" tabIndex={0}>
+            <g key={node.id} className={selected ? 'graph-node selected' : highlighted ? 'graph-node highlighted' : 'graph-node'} onClick={() => onSelect(node.id)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onSelect(node.id) } }} role="button" tabIndex={0}>
               <title>{node.label}</title>
               <rect x={p.x - 52} y={p.y - 24} width="104" height="48" rx="10" />
               <text x={p.x} y={p.y - 3} textAnchor="middle">{node.id.length > 14 ? `${node.id.slice(0, 13)}…` : node.id}</text>
